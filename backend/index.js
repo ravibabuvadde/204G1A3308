@@ -1,11 +1,15 @@
 const express = require("express");
-
+const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const API_URL = "http://20.244.56.144/train/trains";
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTE1NjI4NDYsImNvbXBhbnlOYW1lIjoiQmVzdCBUcmFpbiBDb21wYW55IiwiY2xpZW50SUQiOiI5YmI0YTU1Zi1iNWRiLTRkOWEtYTk2Yy1iYmRiMDJkNjk1YjAiLCJvd25lck5hbWUiOiIiLCJvd25lckVtYWlsIjoiIiwicm9sbE5vIjoiMjA0RzFBMzMwOCJ9.tbYmciQT96HIJj4D0BbHmCVoZqQTLO5pJSpo1b-KV7s";
 
 const filterTrains = (train) => {
   const currentDate = new Date();
@@ -49,172 +53,14 @@ const sortTrains = (firstTrain, secondTrain) => {
   return bDepartureTime - firstTrainDepartureTime;
 };
 
-const trains = [
-  {
-    trainName: "Panjim Exp",
-    trainNumber: "2349",
-    departureTime: {
-      Hours: 13,
-      Minutes: 32,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 2,
-      AC: 1,
-    },
-    price: {
-      sleeper: 372,
-      AC: 527,
-    },
-    delayedBy: 9,
-  },
-  {
-    trainName: "Kolkata Exp",
-    trainNumber: "2345",
-    departureTime: {
-      Hours: 20,
-      Minutes: 15,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 16,
-      AC: 70,
-    },
-    price: {
-      sleeper: 520,
-      AC: 620,
-    },
-    delayedBy: 14,
-  },
-  {
-    trainName: "Pune Exp",
-    trainNumber: "2342",
-    departureTime: {
-      Hours: 23,
-      Minutes: 0,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 6,
-      AC: 7,
-    },
-    price: {
-      sleeper: 839,
-      AC: 1839,
-    },
-    delayedBy: 17,
-  },
-  {
-    trainName: "Hyderabad Exp",
-    trainNumber: "2341",
-    departureTime: {
-      Hours: 23,
-      Minutes: 55,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 6,
-      AC: 7,
-    },
-    price: {
-      sleeper: 554,
-      AC: 1854,
-    },
-    delayedBy: 5,
-  },
-  {
-    trainName: "Patna Exp",
-    trainNumber: "2340",
-    departureTime: {
-      Hours: 6,
-      Minutes: 10,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 10,
-      AC: 1,
-    },
-    price: {
-      sleeper: 432,
-      AC: 573,
-    },
-    delayedBy: 0,
-  },
-  {
-    trainName: "Gandhinagar Exp",
-    trainNumber: "2341",
-    departureTime: {
-      Hours: 7,
-      Minutes: 15,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 15,
-      AC: 5,
-    },
-    price: {
-      sleeper: 457,
-      AC: 690,
-    },
-    delayedBy: 1,
-  },
-  {
-    trainName: "Delhi Exp",
-    trainNumber: "2343",
-    departureTime: {
-      Hours: 9,
-      Minutes: 45,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 32,
-      AC: 1,
-    },
-    price: {
-      sleeper: 487,
-      AC: 1473,
-    },
-    delayedBy: 3,
-  },
-  {
-    trainName: "Mumbai Exp",
-    trainNumber: "2343",
-    departureTime: {
-      Hours: 22,
-      Minutes: 37,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 8,
-      AC: 15,
-    },
-    price: {
-      sleeper: 520,
-      AC: 620,
-    },
-    delayedBy: 16,
-  },
-  {
-    trainName: "Sikkim Exp",
-    trainNumber: "2345",
-    departureTime: {
-      Hours: 11,
-      Minutes: 23,
-      Seconds: 0,
-    },
-    seatsAvailable: {
-      sleeper: 4,
-      AC: 4,
-    },
-    price: {
-      sleeper: 711,
-      AC: 1487,
-    },
-    delayedBy: 5,
-  },
-];
-
-app.get("/trains", (req, res) => {
+app.post("/trains", async (req, res) => {
+  const trains = await axios
+    .get(API_URL, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+    .then((res) => res.data);
   const result = trains.filter(filterTrains).sort(sortTrains);
 
   res.json(result);
