@@ -10,17 +10,21 @@ $ npm install
 $ npm start
 ```
 
+## URL
+
+    ```
+    http://localhost:4000
+    ```
+
 ## Endpoints
 
 ```
 POST /trains/
 ```
 
-
 ## Outputs
+
 ![API Response](https://github.com/ravibabuvadde/204G1A3308/assets/79750913/2c6a0d7f-6f1f-4e39-b701-6fcf4eaca659)
-
-
 
 # Frontend
 
@@ -30,6 +34,12 @@ POST /trains/
 $ cd frontend
 $ npm install
 $ npm run dev
+```
+
+## URL
+
+```
+http://localhost:5173
 ```
 
 ## Routes
