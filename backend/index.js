@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const API_URL = "http://20.244.56.144/train/trains";
+// const API_URL = "http://20.244.56.144/train/trains";
+const API_URL = "http://localhost:3001/trains";
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTE1NjI4NDYsImNvbXBhbnlOYW1lIjoiQmVzdCBUcmFpbiBDb21wYW55IiwiY2xpZW50SUQiOiI5YmI0YTU1Zi1iNWRiLTRkOWEtYTk2Yy1iYmRiMDJkNjk1YjAiLCJvd25lck5hbWUiOiIiLCJvd25lckVtYWlsIjoiIiwicm9sbE5vIjoiMjA0RzFBMzMwOCJ9.tbYmciQT96HIJj4D0BbHmCVoZqQTLO5pJSpo1b-KV7s";
 
