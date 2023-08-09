@@ -1,13 +1,21 @@
 import { useState } from "react";
 import TrainsList from "./components/TrainsList";
+import Train from "./components/Train";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
+  const [trains, setTrain] = useState([]);
   return (
-    <div className="bg-dark text-white min-vh-100 mb-4">
-      <h1>Best Trains Company</h1>
-      <TrainsList />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<TrainsList trains={trains} setTrain={setTrain} />}
+        />
+        <Route path="/train/:trainNumber" element={<Train trains={trains} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

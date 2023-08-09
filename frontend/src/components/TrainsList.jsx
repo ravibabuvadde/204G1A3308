@@ -3,9 +3,8 @@ import { useState } from "react";
 import Table from "react-bootstrap/Table";
 import Container from "react-bootstrap/Container";
 import axios from "axios";
-const TrainsList = () => {
-  const [trains, setTrain] = useState([]);
-
+import { Link } from "react-router-dom";
+const TrainsList = ({ trains, setTrain }) => {
   useEffect(() => {
     const data = axios.post("http://localhost:4000/trains").then((res) => {
       setTrain(res.data);
@@ -32,7 +31,12 @@ const TrainsList = () => {
           {trains.map((train, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{train.trainNumber}</td>
+              <td>
+                <Link to={`/train/${train.trainNumber}`}>
+                  {" "}
+                  {train.trainNumber}
+                </Link>
+              </td>
               <td>{train.trainName}</td>
               <td>
                 Sleeper: {train.price.sleeper}
