@@ -2,15 +2,21 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const API_URL = "http://20.244.56.144/train/trains";
-// const API_URL = "http://localhost:3001/trains";
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTE1NzA4MzcsImNvbXBhbnlOYW1lIjoiQmVzdCBUcmFpbiBDb21wYW55IiwiY2xpZW50SUQiOiI5YmI0YTU1Zi1iNWRiLTRkOWEtYTk2Yy1iYmRiMDJkNjk1YjAiLCJvd25lck5hbWUiOiIiLCJvd25lckVtYWlsIjoiIiwicm9sbE5vIjoiMjA0RzFBMzMwOCJ9.lEe-xLr1cWJLA2uB_1MWuW-R_mTW6MvMrrhfMs6YO9g";
+console.log(process.env.API_URL);
+
+const API_URL = process.env.API_URL;
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+
+let token = "";
 
 const filterTrains = (train) => {
   const currentDate = new Date();
@@ -54,17 +60,64 @@ const sortTrains = (firstTrain, secondTrain) => {
   return bDepartureTime - firstTrainDepartureTime;
 };
 
+const fetchToken = async () => {
+  const response = await axios.post("http://20.244.56.144/train/auth", {
+    companyName: "Best Train Company",
+    clientID: "9bb4a55f-b5db-4d9a-a96c-bbdb02d695b0",
+    ownerName: "Ravi Babu V C",
+    ownerEmail: "204g1a3308@srit.ac.in",
+    clientSecret: "hHLITWJcJKzJsRPe",
+    rollNo: "204G1A3308",
+  });
+  // console.log(response.data);
+  return response.data.access_token;
+};
+
+const fetchTrains = async (token) => {
+  const response = await axios.get(API_URL, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  return response.data;
+};
+
 app.post("/trains", async (req, res) => {
-  const trains = await axios
-    .get(API_URL, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    })
-    .then((res) => res.data);
-  const result = trains.filter(filterTrains).sort(sortTrains);
+  if (token === "") {
+    token = await fetchToken();
+  }
+  let trains = await fetchTrains(token);
+
+  if (trains.length === 0 && trains.message) {
+    token = await fetchToken();
+    trains = await fetchTrains(token);
+  }
+
+  const result =
+    trains.length > 0 ? trains.filter(filterTrains).sort(sortTrains) : [];
 
   res.json(result);
+});
+
+const fetchTrain = async (trainId) => {
+  const response = await axios.get(API_URL + "/" + trainId, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  return response.data;
+};
+
+app.post("/trains/:trainId", async (req, res) => {
+  const trainId = req.params.trainId;
+  let train = await fetchTrain(trainId);
+
+  if (train.message) {
+    token = await fetchToken();
+    train = await fetchTrain(trainId);
+  }
+
+  res.json(train);
 });
 
 app.get("/", (req, res) => {
