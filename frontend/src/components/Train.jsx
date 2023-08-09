@@ -1,6 +1,8 @@
+import { useParams } from "react-router-dom";
+
 const Train = (props) => {
   const { trains } = props;
-  const trainNumber = props.match.params.trainNumber;
+  const { trainNumber } = useParams();
   return (
     <div>
       <h1>Train</h1>
